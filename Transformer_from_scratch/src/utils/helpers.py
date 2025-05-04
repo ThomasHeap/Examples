@@ -1,6 +1,6 @@
 import torch
 
-def create_padding_mask(seq):
+def create_padding_mask(seq, pad_idx):
     """
     Create a mask for padding tokens.
     Args:
@@ -9,7 +9,7 @@ def create_padding_mask(seq):
         mask: Tensor of shape [batch_size, 1, 1, seq_len]
     """
     # Create a mask where padding tokens (0) are True
-    mask = (seq == 0).unsqueeze(1).unsqueeze(2)
+    mask = (seq == pad_idx).unsqueeze(1).unsqueeze(2)
     return mask
 
 def create_look_ahead_mask(size):
@@ -20,7 +20,7 @@ def create_look_ahead_mask(size):
     Returns
         mask: Tensor of shape [size,size]
     """
-    return torch.triu(torch.ones(size,size) * float('-inf'), diagonal=1)
+    return torch.tril(torch.ones(size, size)).bool()
 
 def get_device():
     return torch.device("cuda" if torch.cuda.is_available() else "cpu")

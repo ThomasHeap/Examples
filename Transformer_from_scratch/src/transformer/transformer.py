@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
 
-from embeddings import TokenEmbedding, PositionalEncoding
-from encoder import Encoder
-from decoder import Decoder
+from .encoder import Encoder
+from .decoder import Decoder
+from .embeddings import TokenEmbedding, PositionalEncoding
 
 
 class Transformer(nn.Module):
@@ -56,8 +56,11 @@ class Transformer(nn.Module):
             Tensor of shape [batch_size, tgt_seq_len, tgt_vocab_size]
         """
         enc_output = self.encode(src, src_mask)
+
         dec_output = self.decode(tgt, enc_output, src_mask, tgt_mask)
+
         output = self.linear(dec_output)
+
         return output
 
     def encode(self, src, src_mask=None):

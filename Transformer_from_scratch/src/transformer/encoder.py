@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 
-from attention import MultiHeadAttention
-from feed_forward import PositionwiseFeedForward
+from .attention import MultiHeadAttention
+from .feed_forward import PositionwiseFeedForward
 
 class EncoderLayer(nn.Module):
     def __init__(self, d_model, num_heads, d_ff, dropout=0.1):

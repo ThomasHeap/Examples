@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-
+import math
 
 class ScaledDotProductAttention(nn.Module):
     def __init__(self, dropout=0.1):
@@ -26,11 +26,13 @@ class ScaledDotProductAttention(nn.Module):
             Tensor of shape [batch_size, num_heads, seq_len, d_v]
         """
         d_k = k.shape[-1]
-        attn_scores = q @ k.transpose(-2, -1) / torch.sqrt(d_k)
+        # Scale the dot product
+        attn_scores = q @ k.transpose(-2, -1) / math.sqrt(d_k)
         
         if mask is not None:
-            attn_scores = attn_scores.masked_fill(mask == 0, float('-inf'))
-        
+            # Use a large negative number instead of -inf for better numerical stability
+            attn_scores = attn_scores.masked_fill(mask == 0, -1e9)
+                
         attn_weights = nn.functional.softmax(attn_scores, dim=-1)
         attn_weights = self.dropout(attn_weights)
         
